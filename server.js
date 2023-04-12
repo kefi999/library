@@ -12,7 +12,7 @@ const bodyParser = require("body-parser");
 //Routers
 const indexRouter = require("./routes/index"); //gets our exported router from the index.js router folder
 const authorRouter = require("./routes/authors");
-
+const bookRouter = require("./routes/books");
 //app.set assigns a settings name a certain value
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views"); //_dirname holds the current directory address so it's good to have it if you're planning  to run this on multiple machines.
@@ -28,6 +28,7 @@ app.use(
 );
 app.use("/", indexRouter); //on this router this router will take care of it.
 app.use("/authors", authorRouter);
+app.use("/books", bookRouter);
 
 mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true, //needed for the new mongoose version
