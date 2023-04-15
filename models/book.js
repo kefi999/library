@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const path = require("path");
+
 const coverImageBasePath = "uploads/book";
-const bookSchema = mongoose.Schema({
+
+const bookSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -20,7 +22,7 @@ const bookSchema = mongoose.Schema({
   createdAt: {
     type: Date,
     required: true,
-    default: Date.now(),
+    default: Date.now,
   },
   coverImage: {
     type: String,

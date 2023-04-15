@@ -18,9 +18,21 @@ router.get("/new", async (req, res) => {
   renderNewPage(res, new Book());
 });
 
+//query is not overwritten but if multiple parameters are present the query will include all of them(they're just added)
 router.get("/", async (req, res) => {
+  let query = Book.find();
+  if (req.query.title != null && req.query.title != "") {
+    query = query.regex("title", new RegExp(req.query.title, "i"));
+  }
+  if (req.query.publishedBefore != null && req.query.publishedBefore != "") {
+    query = query.lte("publishDate", req.query.publishedBefore);
+  }
+  if (req.query.publishedAfter != null && req.query.publishedAfter != "") {
+    query = query.gte("publishDate", req.query.publishedAfter);
+  }
   try {
-    const book = await Book.find({});
+    console.log(query);
+    const book = await query.exec();
     res.render("books/index", { book: book, searchOptions: req.query });
   } catch (error) {
     res.redirect("/");
@@ -40,7 +52,6 @@ router.post("/", upload.single("cover"), async (req, res) => {
 
   try {
     const newBook = await book.save();
-    console.log("Try");
     res.redirect("books");
   } catch (error) {
     if (book.coverImage != null) {
