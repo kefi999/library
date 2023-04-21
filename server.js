@@ -30,7 +30,7 @@ db.once("open", () => {
   console.log("good to go!");
 });
 //ROUTERS USE
-app.use("/", indexRouter); //on this router this router will take care of it.
+app.use("/", indexRouter); //on this route this router will take care of it.
 app.use("/authors", authorRouter);
 app.use("/books", bookRouter);
 //
