@@ -22,7 +22,7 @@ const bookSchema = new mongoose.Schema({
     default: Date.now,
   },
   coverImage: {
-    type: Buffer, //research
+    type: Buffer, //this can store binary data such as images
     required: true,
   },
   coverImageType: {
