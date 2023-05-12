@@ -10,10 +10,8 @@ const authorSchema = new mongoose.Schema({
 authorSchema.pre("remove", function (next) {
   Book.find({ author: this.id }, (error, books) => {
     //mongoose function
-    if (error) next(err);
-    else if (books.length > 0) {
-      next(new Error("There are books linked to that author"));
-    } else {
+    let err = new Error("Hey stop");
+    if (!error && books.length === 0) {
       next();
     }
   });

@@ -85,8 +85,8 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   let author;
   try {
-    author = await Author.findByIdAndDelete(req.params.id);
-    //.remove() doesn't work because
+    author = await Author.findById(req.params.id);
+    author.remove();
     // This error occurs because the findById()method returns a plain JavaScript object,not a Mongoose document.
     // Therefore, the remove() method is not available on the author object.
     res.redirect("/authors");

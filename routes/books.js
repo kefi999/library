@@ -48,6 +48,58 @@ router.post("/", async (req, res) => {
     renderNewPage(res, book, true);
   }
 });
+
+router.get("/:id", async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id).populate("author").exec();
+
+    res.render("books/show", { book: book });
+  } catch (err) {
+    res.redirect("/");
+  }
+});
+// The query is then populated with the associated author's data using the populate() method
+router.get("/:id/edit", async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    renderEditPage(res, book);
+  } catch (err) {
+    console.log(err);
+    res.redirect("/");
+  }
+});
+router.put("/:id", async (req, res) => {
+  let book;
+  try {
+    book = await Book.findById(req.params.id);
+    book.title = req.body.title;
+    book.author = req.body.author;
+    book.publishDate = new Date(req.body.publishDate);
+    book.pageCount = req.body.pageCount;
+    book.description = req.body.description;
+
+    if (req.body.cover != null && req.body.cover != "") {
+      saveCover(book, req.book.cover);
+    }
+    await book.save();
+    res.redirect(`/books/${book.id}`);
+  } catch (err) {
+    console.log(err);
+    res.render("books/edit", { book: book });
+  }
+});
+router.delete("/:id", async (req, res) => {
+  let book;
+  try {
+    book = Book.findById(req.params.id);
+    await book.remove();
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+    res.redirect(`/books/${book.id}`);
+  }
+});
+
 function saveCover(book, coverEncoded) {
   if (coverEncoded == null) return;
   const cover = JSON.parse(coverEncoded);
@@ -56,6 +108,7 @@ function saveCover(book, coverEncoded) {
     book.coverImageType = cover.type;
   }
 }
+
 async function renderNewPage(res, book, hasError = false) {
   try {
     const authors = await Author.find({});
@@ -64,6 +117,16 @@ async function renderNewPage(res, book, hasError = false) {
     res.render("books/new", params);
   } catch (error) {
     res.redirect("/books");
+  }
+}
+async function renderEditPage(res, book) {
+  try {
+    const authors = await Author.find({});
+    // console.log(authors);
+    res.render("books/edit", { book: book, authors: authors });
+  } catch (err) {
+    console.log(err);
+    res.redirect(`/books/${book.id}`);
   }
 }
 
